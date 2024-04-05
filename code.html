@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabela 11x11 com Imagens</title>
+<style>
+    #tabela-container {
+        width: 650px;
+        height: 650px;
+        overflow: auto; /* Adiciona barras de rolagem caso a tabela seja maior que a div */
+        border: 1px solid #000;
+        position: relative; /* Adiciona posição relativa para as imagens */
+    }
+
+    #tabela-container table {
+        width: 100%;
+        height: 100%;
+        border-collapse: collapse;
+    }
+
+    #tabela-container table td {
+        width: calc(100% / 11);
+        height: calc(100% / 11);
+        border: 1px solid #000;
+        text-align: center;
+        position: relative; /* Para permitir que a imagem seja posicionada dentro da célula */
+        cursor: pointer; /* Altera o cursor ao passar sobre a célula */
+    }
+
+    #tabela-container table td img {
+        max-width: 100%;
+        max-height: 100%;
+        position: absolute; /* Posiciona a imagem dentro da célula */
+        top: 0;
+        left: 0;
+    }
+
+    /* Estilo para a primeira linha (cabeçalho) */
+    #tabela-container table tr:first-child td {
+        background-color: lightgray;
+    }
+</style>
+</head>
+<body>
+
+<div id="tabela-container"></div>
+
+<script>
+    // Função para criar a tabela 11x11 dentro da div especificada
+    function criarTabela() {
+        var tabelaContainer = document.getElementById('tabela-container');
+        var tabela = document.createElement('table');
+
+        // Criando as linhas e colunas
+        for (var i = 0; i < 11; i++) {
+            var linha = document.createElement('tr');
+            for (var j = 0; j < 11; j++) {
+                var celula = document.createElement('td');
+
+                // Numeração de linha e de coluna
+                if (i === 0 && j !== 0) {
+                    // Se é a primeira linha e não é a primeira coluna, numerar de 1 a 10
+                    celula.textContent = j;
+                } else if (i !== 0 && j === 0) {
+                    // Se é a primeira coluna e não é a primeira linha, preencher com letras do alfabeto
+                    celula.textContent = String.fromCharCode(64 + i); // Converte o número ASCII para a letra correspondente
+                }
+
+                // Adicionando evento de clique nas células
+                celula.onclick = function() {
+                    distribuirImagens(this);
+                };
+
+                // Adiciona a imagem da mira
+                if (i !== 0 && j !== 0) {
+                    var imagemMira = document.createElement('img');
+                    imagemMira.src = 'mira.png'; // Define o caminho da imagem
+                    celula.appendChild(imagemMira);
+                }
+
+                linha.appendChild(celula);
+            }
+            tabela.appendChild(linha);
+        }
+
+        // Adicionando a tabela criada dentro da div
+        tabelaContainer.appendChild(tabela);
+    }
+
+    // Função para distribuir imagens na célula clicada
+    function distribuirImagens(celula) {
+        var imagensDisponiveis = ['agua.png', 'barco1p.png', 'barco2p.png', 'barco3p.png', 'barco4p.png'];
+
+        // Verifica se a célula contém a imagem da mira
+        if (celula.querySelector('img').src === window.location.href + 'mira.png') {
+            // Seleciona aleatoriamente uma das imagens disponíveis
+            var imagemSelecionada = imagensDisponiveis[Math.floor(Math.random() * imagensDisponiveis.length)];
+
+            // Substitui a imagem da mira pela imagem aleatória selecionada
+            celula.innerHTML = '<img src="' + imagemSelecionada + '" alt="Imagem">';
+        }
+    }
+
+    // Chama a função quando a página carrega para criar a tabela
+    window.onload = function() {
+        criarTabela();
+    };
+
+</script>
+
+</body>
+</html>
